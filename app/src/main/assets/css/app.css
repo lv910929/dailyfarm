@@ -1,0 +1,37 @@
+@charset "utf-8";
+/* CSS Document */
+html,body{
+	color: #505050;
+	line-height:1.75em;
+	background: #ebebeb;
+	font-family:Arial, Helvetica, sans-serif;
+}
+
+.main-header{
+	text-align: center;
+	padding:42px 0;
+	background:#ffffff;
+}
+
+.main-header .branding{
+	font-size:3.5em;
+	color:#303030;
+}
+
+a{
+	color:#e67e22;
+	outline:none;
+	text-decoration:none;
+}
+
+.main-header .branding img{]
+	max-width:100%;
+}
+
+a:active,a:focus,a img{
+	outline:none;
+}
+
+.main-navigation{
+	text-align:center;
+}
