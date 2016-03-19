@@ -4,6 +4,8 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
 
+    useLibrary 'org.apache.http.legacy'
+
     defaultConfig {
         applicationId "com.hitotech.dailyfarm"
         minSdkVersion 14
@@ -23,6 +25,11 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'com.android.support:design:23.2.1'
     compile 'com.bigkoo:svprogresshud:1.0.2'
 
+    compile 'com.loopj.android:android-async-http:1.4.8'
+    compile 'com.google.code.gson:gson:2.3.1'
+    compile 'org.apache.httpcomponents:httpclient:4.5'
+    compile 'org.apache.httpcomponents:httpcore:4.4.3'
 }
