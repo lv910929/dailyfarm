@@ -22,9 +22,15 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".wxapi.WXPayEntryActivity"
-            android:theme="@style/AppTheme.NoActionBar"
             android:exported="true"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <receiver android:name=".receiver.AppRegister">
+            <intent-filter>
+                <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
