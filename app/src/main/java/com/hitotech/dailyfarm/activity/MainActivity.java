@@ -1,41 +1,49 @@
 package com.hitotech.dailyfarm.activity;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.webkit.GeolocationPermissions;
-import android.webkit.JsResult;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.Toast;
 
-import com.bigkoo.svprogresshud.SVProgressHUD;
 import com.hitotech.dailyfarm.R;
+import com.hitotech.dailyfarm.data.Constant;
+import com.hitotech.dailyfarm.utils.DialogUtil;
+import com.hitotech.dailyfarm.utils.JavaScriptObject;
+import com.hitotech.dailyfarm.webview.MyWebChromeClient;
+import com.hitotech.dailyfarm.webview.MyWebViewClient;
+import com.hitotech.dailyfarm.wxapi.SocialWechatHandler;
 
-public class MainActivity extends AppCompatActivity {
-
-    public static final String URL_STRING = "file:///android_asset/day1.html";
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private WebView webView;
+    private Button testJSButton;
 
-    SVProgressHUD progressHUD;
+    private JavaScriptObject javaScriptObject;
+    private MyWebViewClient myWebViewClient;
+    private MyWebChromeClient myWebChromeClient;
 
+    private Handler handler = new Handler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        javaScriptObject = new JavaScriptObject(this);
         webView= (WebView) findViewById(R.id.webView);
+        testJSButton = (Button) findViewById(R.id.btn_test_js);
         setWebView();
-        webView.loadUrl(URL_STRING);
+        webView.loadUrl(Constant.URL_STRING);
+        testJSButton.setOnClickListener(this);
     }
 
     private void setWebView(){
+        myWebChromeClient = new MyWebChromeClient();
+        myWebViewClient = new MyWebViewClient(MainActivity.this);
         WebSettings webSettings = webView.getSettings();
         // 设置WebView属性，能够执行Javascript脚本
         webSettings.setJavaScriptEnabled(true);
@@ -53,25 +61,9 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setGeolocationEnabled(true);
         // 设置定位的数据库路径
         webSettings.setGeolocationDatabasePath(dir);
-        // 最重要的方法，一定要设置，这就是出不来的主要原因
         webSettings.setDomStorageEnabled(true);
-        // 设置Web视图
-        webView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
-        webView.setWebViewClient(new MyWebViewClient());
-        webView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public boolean onJsAlert(WebView view, String url, String message,
-                                     JsResult result) {
-                return super.onJsAlert(view, url, message, result);
-            }
-
-            @Override
-            public void onGeolocationPermissionsShowPrompt(String origin,
-                                                           GeolocationPermissions.Callback callback) {
-                callback.invoke(origin, true, false);
-                super.onGeolocationPermissionsShowPrompt(origin, callback);
-            }
-        });
+        webView.setWebViewClient(myWebViewClient);
+        webView.setWebChromeClient(myWebChromeClient);
         webView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -83,8 +75,35 @@ public class MainActivity extends AppCompatActivity {
         } else {
             webView.getSettings().setLoadsImagesAutomatically(false);
         }
+        addJavascriptInterface();
     }
 
+    private void addJavascriptInterface(){
+        webView.addJavascriptInterface(new JavaScriptObject(this),"bluet");
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btn_test_js:
+                // 传递参数调用
+                //webView.loadUrl("javascript:client_callback(" + javaScriptObject.client_callback() + ")");
+                //DialogUtil.showSuccessDialog(MainActivity.this, "支付成功！");
+                //DialogUtil.showShareDialog(MainActivity.this);
+                if (SocialWechatHandler.isWXAppInstalled()){
+                    if (SocialWechatHandler.checkWXAppSupport()){
+                        //DialogUtil.showShareDialog(MainActivity.this);
+                        SocialWechatHandler.registerToWX();
+                    }else {
+                        DialogUtil.showInfoDialog(MainActivity.this,"提示","抱歉，您的微信不支持分享功能，请先升级");
+                    }
+                }else {
+                    DialogUtil.showInfoDialog(MainActivity.this,"提示","您尚未安装微信,请先安装微信");
+                }
+
+                break;
+        }
+    }
     /**
      * 重写返回键点击事件
      */
@@ -107,45 +126,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return false;
-    }
-
-    // Web视图
-    private class MyWebViewClient extends WebViewClient {
-
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (url != null && url.startsWith("mailto:")
-                    || url.startsWith("geo:") || url.startsWith("tel:")) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(intent);
-                return true;
-            }
-            view.loadUrl(url);
-            return true;
-        }
-
-        @Override
-        public void onReceivedError(WebView view, int errorCode,
-                                    String description, String failingUrl) {
-            super.onReceivedError(view, errorCode, description, failingUrl);
-            webView.loadUrl("file:///android_asset/day1.html");
-        }
-
-        public void onLoadResource(WebView view, String url) {
-            if (progressHUD == null){
-                progressHUD = new SVProgressHUD(MainActivity.this);
-                progressHUD.showWithStatus("加载中...");
-            }
-        }
-
-        public void onPageFinished(WebView view, String url) {
-
-            if(!webView.getSettings().getLoadsImagesAutomatically()) {
-                webView.getSettings().setLoadsImagesAutomatically(true);
-            }
-            if (progressHUD.isShowing()){
-                progressHUD.dismiss();
-            }
-        }
     }
 
     @Override

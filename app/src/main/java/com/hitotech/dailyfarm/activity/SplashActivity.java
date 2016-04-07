@@ -9,7 +9,6 @@ import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 
 import com.hitotech.dailyfarm.R;
-import com.hitotech.dailyfarm.wxapi.WXPayEntryActivity;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -50,7 +49,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void startActivity() {
-        Intent intent = new Intent(SplashActivity.this, WXPayEntryActivity.class);
+        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
         startActivity(intent);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         finish();

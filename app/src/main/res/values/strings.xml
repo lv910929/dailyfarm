@@ -1,7 +1,8 @@
 <resources>
-    <string name="app_name">买菜</string>
+    <string name="app_name">天天好农场</string>
 
     <!-- WXPayEntryActivity -->
     <string name="pay_result_tip">这个界面用于显示第三方app通过微信支付的结果</string>
     <string name="pay_result_callback_msg" formatted="false">微信支付结果：%s</string>
+    <string name="send_text_default">测试微信分享文字功能</string>
 </resources>

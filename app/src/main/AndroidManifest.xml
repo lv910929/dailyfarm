@@ -3,8 +3,13 @@
     package="com.hitotech.dailyfarm">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.write_external_storage" />
 
     <application
+        android:name=".application.ContextApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -19,6 +24,7 @@
         </activity>
         <activity
             android:name=".activity.MainActivity"
+            android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".wxapi.WXPayEntryActivity"
@@ -26,11 +32,11 @@
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <receiver android:name=".receiver.AppRegister">
-            <intent-filter>
-                <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
-            </intent-filter>
-        </receiver>
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.NoDisplay" />
     </application>
 
 </manifest>
