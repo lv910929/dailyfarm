@@ -36,6 +36,7 @@ public class ContextApplication extends Application{
         initBase();
         setOkHttp();
         api = WXAPIFactory.createWXAPI(this, Constant.APP_ID);
+        ContextApplication.api.registerApp(Constant.APP_ID);
     }
 
     private void initBase() {

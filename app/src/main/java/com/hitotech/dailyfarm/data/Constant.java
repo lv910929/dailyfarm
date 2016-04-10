@@ -14,7 +14,7 @@ public class Constant {
 
     public static final String APP_SECRETT = "0704852ae8d4437b62bcdd3c78f568c8";
 
-    public static final String URL_STRING = "http://a.hondapark.cn/test.html";
+    public static final String URL_STRING = "http://a.hondapark.cn/";
 
     public static final String WX_LOGIN_URL = "https://api.weixin.qq.com/sns/oauth2/access_token?";
 }

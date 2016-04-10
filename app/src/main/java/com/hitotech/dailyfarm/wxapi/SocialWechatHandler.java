@@ -7,8 +7,8 @@ import android.os.Environment;
 
 import com.hitotech.dailyfarm.R;
 import com.hitotech.dailyfarm.application.ContextApplication;
-import com.hitotech.dailyfarm.data.Constant;
 import com.hitotech.dailyfarm.utils.Util;
+import com.tencent.mm.sdk.constants.Build;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXImageObject;
@@ -26,7 +26,7 @@ public class SocialWechatHandler {
     private static final String WEB_PAGE_URL = "http:\\www.baidu.com";
 
     //检查微信是否安装
-    public static boolean isWXAppInstalled(){
+    public static boolean isWXAppInstalled() {
         boolean result = false;
         if (ContextApplication.api.isWXAppInstalled()) {
             result = true;
@@ -35,7 +35,7 @@ public class SocialWechatHandler {
     }
 
     //检查微信是否支持
-    public static boolean checkWXAppSupport(){
+    public static boolean checkWXAppSupport() {
         boolean result = false;
         int wxSdkVersion = ContextApplication.api.getWXAppSupportAPI();
         if (wxSdkVersion >= ContextApplication.TIMELINE_SUPPORTED_VERSION) {
@@ -44,9 +44,19 @@ public class SocialWechatHandler {
         return result;
     }
 
+    //检查微信支付是否支持
+    public static boolean checkWXPaySupport() {
+        boolean result = false;
+        int wxSdkVersion = ContextApplication.api.getWXAppSupportAPI();
+        if (wxSdkVersion >= Build.PAY_SUPPORTED_SDK_INT) {
+            result = true;
+        }
+        return result;
+    }
+
     //调用微信，申请用户授权
-    public static void registerToWX(){
-        ContextApplication.api.registerApp(Constant.APP_ID);
+    public static void registerToWX() {
+
         SendAuth.Req req = new SendAuth.Req();
         //授权读取用户信息
         req.scope = "snsapi_userinfo";
@@ -59,7 +69,7 @@ public class SocialWechatHandler {
     /**
      * 发送文本到微信
      */
-    public static void sendTextToWX(String text,boolean isWX){
+    public static void sendTextToWX(String text, boolean isWX) {
         // 初始化一个WXTextObject对象
         WXTextObject textObj = new WXTextObject();
         textObj.text = text;
@@ -81,7 +91,7 @@ public class SocialWechatHandler {
     /**
      * 发送图片到微信
      */
-    public static void sendImgToWX(Context context,boolean isWX){
+    public static void sendImgToWX(Context context, boolean isWX) {
         Bitmap bmp = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
         WXImageObject imgObj = new WXImageObject(bmp);
         WXMediaMessage msg = new WXMediaMessage();
@@ -99,9 +109,9 @@ public class SocialWechatHandler {
     /**
      * 发送web到微信
      */
-    public static void sendWebPageToWX(Context context,String title,String description,boolean isWX){
+    public static void sendWebPageToWX(Context context, String title, String description,String url, boolean isWX) {
         WXWebpageObject webpage = new WXWebpageObject();
-        webpage.webpageUrl = WEB_PAGE_URL;
+        webpage.webpageUrl = url;
         WXMediaMessage msg = new WXMediaMessage(webpage);
         msg.title = title;
         msg.description = description;
@@ -113,6 +123,7 @@ public class SocialWechatHandler {
         req.scene = isWX ? SendMessageToWX.Req.WXSceneSession : SendMessageToWX.Req.WXSceneTimeline;
         ContextApplication.api.sendReq(req);
     }
+
 
     private static String buildTransaction(String type) {
         return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();

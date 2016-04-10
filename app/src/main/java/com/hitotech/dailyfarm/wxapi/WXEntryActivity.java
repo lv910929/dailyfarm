@@ -59,6 +59,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
             case BaseResp.ErrCode.ERR_OK://用户同意
                 code = ((SendAuth.Resp) baseResp).code; //即为所需的code
                 System.out.println("微信确认登录返回的code：" + code);
+                finish();
                 break;
             case BaseResp.ErrCode.ERR_AUTH_DENIED://用户拒绝授权
 

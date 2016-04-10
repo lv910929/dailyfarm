@@ -3,4 +3,14 @@
     <color name="colorPrimary">#64BE00</color>
     <color name="colorPrimaryDark">#3E7603</color>
     <color name="colorAccent">#64BE00</color>
+
+    <color name="alpha_50_black">#80000000</color>
+    <color name="alpha_55_black">#8C000000</color>
+    <color name="alpha_60_black">#99000000</color>
+    <color name="alpha_65_black">#A6000000</color>
+    <color name="alpha_70_black">#B3000000</color>
+    <color name="alpha_75_black">#BF000000</color>
+    <color name="alpha_80_black">#CC000000</color>
+    <color name="alpha_85_black">#D9000000</color>
+    <color name="alpha_90_black">#E6000000</color>
 </resources>

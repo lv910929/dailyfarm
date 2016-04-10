@@ -1,5 +1,6 @@
 package com.hitotech.dailyfarm.activity;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,12 +15,14 @@ import android.widget.Toast;
 import com.hitotech.dailyfarm.R;
 import com.hitotech.dailyfarm.data.Constant;
 import com.hitotech.dailyfarm.utils.DialogUtil;
-import com.hitotech.dailyfarm.utils.JavaScriptObject;
+import com.hitotech.dailyfarm.webview.JavaScriptObject;
 import com.hitotech.dailyfarm.webview.MyWebChromeClient;
 import com.hitotech.dailyfarm.webview.MyWebViewClient;
 import com.hitotech.dailyfarm.wxapi.SocialWechatHandler;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+
+    public static final Integer QRSCAN_REQUEST_CODE = 100;
 
     private WebView webView;
     private Button testJSButton;
@@ -80,6 +83,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void addJavascriptInterface(){
         webView.addJavascriptInterface(new JavaScriptObject(this),"bluet");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        if (requestCode == QRSCAN_REQUEST_CODE) {
+            Bundle bundle=data.getExtras(); //data为B中回传的Intent
+            String content=bundle.getString("resultContent");//str即为回传的值
+            //Toast.makeText(MainActivity.this,content,Toast.LENGTH_SHORT).show();
+            webView.loadUrl("javascript:qrcodeback(" + javaScriptObject.qrcodeback(content) + ")");
+        }
     }
 
     @Override

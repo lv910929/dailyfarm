@@ -65,7 +65,7 @@ public class DialogUtil {
         }
     }
 
-    public static void showShareDialog(Context context) {
+    public static void showShareDialog(final Context context, final String title, final String description,final String url) {
         SocializeAdapter socializeAdapter = new SocializeAdapter(context);
         ListView listView = new ListView(context);
         listView.setLayoutParams(new ViewGroup.LayoutParams(
@@ -92,9 +92,9 @@ public class DialogUtil {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-                    SocialWechatHandler.sendTextToWX("测试一下", true);
+                    SocialWechatHandler.sendWebPageToWX(context,title,description,url,true);
                 } else {
-                    SocialWechatHandler.sendTextToWX("测试一下", false);
+                    SocialWechatHandler.sendWebPageToWX(context, title, description, url, false);
                 }
                 alert.dismiss();
             }
