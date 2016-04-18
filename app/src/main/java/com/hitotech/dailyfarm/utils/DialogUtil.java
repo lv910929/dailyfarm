@@ -34,7 +34,6 @@ public class DialogUtil {
     public static void showWaitDialog(Context context, String message) {
         if (!((Activity) context).isFinishing()) {
             progressDialog = new ProgressDialog(context);
-            // progressDialog.setTitle(title);
             progressDialog.setMessage(message);
             progressDialog.setCancelable(false);
             progressDialog.show();
@@ -49,6 +48,21 @@ public class DialogUtil {
 
     public static void releaseWaitDialog() {
         progressDialog = null;
+    }
+
+    public static void showHubWaitDialog(Context context, String message){
+        if (!((Activity) context).isFinishing()) {
+            if (progressHUD == null){
+                progressHUD = new SVProgressHUD(context);
+                progressHUD.showWithStatus(message);
+            }
+        }
+    }
+
+    public static void hideHubWaitDialog(){
+        if (progressHUD.isShowing()){
+            progressHUD.dismiss();
+        }
     }
 
     public static void showSuccessDialog(Context context, String message) {

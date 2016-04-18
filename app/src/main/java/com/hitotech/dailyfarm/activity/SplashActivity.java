@@ -2,28 +2,46 @@ package com.hitotech.dailyfarm.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.hitotech.dailyfarm.R;
+import com.umeng.message.IUmengRegisterCallback;
+import com.umeng.message.MsgConstant;
+import com.umeng.message.PushAgent;
 
 public class SplashActivity extends AppCompatActivity {
 
     private ImageView startImage;
+
+    private PushAgent mPushAgent;
+
+    public Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
-        startImage= (ImageView) findViewById(R.id.iv_start);
+        handler = new Handler();
+        mPushAgent = PushAgent.getInstance(this);
+        mPushAgent.setDebugMode(true);
+        // sdk关闭通知声音
+        mPushAgent.setNotificationPlaySound(MsgConstant.NOTIFICATION_PLAY_SDK_DISABLE);
+        mPushAgent.onAppStart();
+        //开启推送并设置注册的回调处理
+        mPushAgent.enable(mRegisterCallback);
+        startImage = (ImageView) findViewById(R.id.iv_start);
         initImage();
     }
 
-    private void initImage(){
+    private void initImage() {
         startImage.setImageResource(R.mipmap.bg_start);
 
         final ScaleAnimation scaleAnim = new ScaleAnimation(1.0f, 1.2f, 1.0f, 1.2f,
@@ -54,4 +72,21 @@ public class SplashActivity extends AppCompatActivity {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         finish();
     }
+
+    public IUmengRegisterCallback mRegisterCallback = new IUmengRegisterCallback() {
+
+        @Override
+        public void onRegistered(String registrationId) {
+
+            handler.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    String deviceToken = mPushAgent.getRegistrationId();
+                    Toast.makeText(SplashActivity.this,deviceToken,Toast.LENGTH_SHORT).show();
+                    Log.e("deviceToken-------",deviceToken);
+                }
+            });
+        }
+    };
 }

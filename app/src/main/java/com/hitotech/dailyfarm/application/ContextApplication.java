@@ -7,8 +7,10 @@ import android.content.pm.PackageManager;
 import android.os.Handler;
 
 import com.hitotech.dailyfarm.data.Constant;
+import com.hitotech.dailyfarm.entity.Token;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.umeng.message.PushAgent;
 import com.zhy.http.okhttp.OkHttpUtils;
 
 import java.util.concurrent.TimeUnit;
@@ -26,6 +28,10 @@ public class ContextApplication extends Application{
 
     public static IWXAPI api;
 
+    private PushAgent mPushAgent;
+
+    public static Token token;
+
     public static ContextApplication getInstance() {
         return instance;
     }
@@ -37,6 +43,9 @@ public class ContextApplication extends Application{
         setOkHttp();
         api = WXAPIFactory.createWXAPI(this, Constant.APP_ID);
         ContextApplication.api.registerApp(Constant.APP_ID);
+        mPushAgent = PushAgent.getInstance(this);
+        mPushAgent.setDebugMode(true);
+        token = null;
     }
 
     private void initBase() {

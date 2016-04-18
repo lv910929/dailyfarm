@@ -4,9 +4,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.util.Log;
 
 import com.hitotech.dailyfarm.R;
 import com.hitotech.dailyfarm.application.ContextApplication;
+import com.hitotech.dailyfarm.data.Constant;
+import com.hitotech.dailyfarm.utils.MD5;
 import com.hitotech.dailyfarm.utils.Util;
 import com.tencent.mm.sdk.constants.Build;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
@@ -15,6 +18,15 @@ import com.tencent.mm.sdk.modelmsg.WXImageObject;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.sdk.modelmsg.WXTextObject;
 import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
+import com.tencent.mm.sdk.modelpay.PayReq;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by Lv on 2016/4/3.
@@ -23,7 +35,6 @@ public class SocialWechatHandler {
 
     private static final int THUMB_SIZE = 150;
     private static final String SDCARD_ROOT = Environment.getExternalStorageDirectory().getAbsolutePath();
-    private static final String WEB_PAGE_URL = "http:\\www.baidu.com";
 
     //检查微信是否安装
     public static boolean isWXAppInstalled() {
@@ -123,7 +134,79 @@ public class SocialWechatHandler {
         req.scene = isWX ? SendMessageToWX.Req.WXSceneSession : SendMessageToWX.Req.WXSceneTimeline;
         ContextApplication.api.sendReq(req);
     }
+    //生成预付单信息
+    public static String genProductArgs(Map<String,String> prepareMap) {
+        StringBuffer xml = new StringBuffer();
+        try {
+            String	nonceStr = genNonceStr();
+            xml.append("</xml>");
+            List<NameValuePair> packageParams = new LinkedList<NameValuePair>();
+            packageParams.add(new BasicNameValuePair("appid", Constant.APP_ID));
+            packageParams.add(new BasicNameValuePair("body", "APP pay test"));//描述
+            packageParams.add(new BasicNameValuePair("mch_id", Constant.MCH_ID));
+            packageParams.add(new BasicNameValuePair("nonce_str", nonceStr));
+            packageParams.add(new BasicNameValuePair("notify_url", "http://121.40.35.3/test"));
+            packageParams.add(new BasicNameValuePair("out_trade_no",prepareMap.get("out_trade_no")));
+            packageParams.add(new BasicNameValuePair("spbill_create_ip","127.0.0.1"));
+            packageParams.add(new BasicNameValuePair("total_fee", prepareMap.get("total_fee")));
+            packageParams.add(new BasicNameValuePair("trade_type", "APP"));
+            String sign = genAppSign(packageParams);
+            packageParams.add(new BasicNameValuePair("sign", sign));
+            String xmlstring =toXml(packageParams);
+            return xmlstring;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
+    //发送支付请求
+    public static void sendPayReq(Map<String,String> resultunifiedorder){
+        PayReq payReq = new PayReq();
+        payReq.appId = Constant.APP_ID;
+        payReq.partnerId = resultunifiedorder.get("partnerId");
+        payReq.prepayId = resultunifiedorder.get("prepayId");
+        payReq.packageValue = "Sign=WXPay";
+        payReq.nonceStr = resultunifiedorder.get("noncestr");
+        payReq.timeStamp = resultunifiedorder.get("timestamp");
+        payReq.sign = resultunifiedorder.get("sign");
+        ContextApplication.api.sendReq(payReq);
+    }
+
+    private static String toXml(List<NameValuePair> params) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<xml>");
+        for (int i = 0; i < params.size(); i++) {
+            sb.append("<"+params.get(i).getName()+">");
+            sb.append(params.get(i).getValue());
+            sb.append("</"+params.get(i).getName()+">");
+        }
+        sb.append("</xml>");
+        Log.e("orion","----"+sb.toString());
+        return sb.toString();
+    }
+
+    public static String genAppSign(List<NameValuePair> params) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < params.size(); i++) {
+            sb.append(params.get(i).getName());
+            sb.append('=');
+            sb.append(params.get(i).getValue());
+            sb.append('&');
+        }
+        sb.append("key=");
+        sb.append(Constant.API_KEY);
+        String appSign = MD5.getMessageDigest(sb.toString().getBytes()).toUpperCase();
+        return appSign;
+    }
+
+    private static String genNonceStr() {
+        Random random = new Random();
+        return MD5.getMessageDigest(String.valueOf(random.nextInt(10000)).getBytes());
+    }
+
+    private static long genTimeStamp() {
+        return System.currentTimeMillis() / 1000;
+    }
 
     private static String buildTransaction(String type) {
         return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
