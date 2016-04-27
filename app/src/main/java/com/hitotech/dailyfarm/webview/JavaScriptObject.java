@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.webkit.JavascriptInterface;
-import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 import com.hitotech.dailyfarm.activity.MainActivity;
@@ -110,9 +109,7 @@ public class JavaScriptObject {
     public void payaction(String payContent) {
         if (SocialWechatHandler.isWXAppInstalled()) {
             if (SocialWechatHandler.checkWXPaySupport()){
-                Toast.makeText(mContext,payContent,Toast.LENGTH_SHORT).show();
                 Map<String, String> payMap = parsePayMap(payContent);
-                Toast.makeText(mContext,payMap.toString(),Toast.LENGTH_SHORT).show();
                 SocialWechatHandler.sendPayReq(payMap);
             }else {
                 DialogUtil.showInfoDialog(mContext,"提示","抱歉，您的微信不支持支付功能，请先升级");

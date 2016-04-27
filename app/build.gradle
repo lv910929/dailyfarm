@@ -71,6 +71,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'com.squareup.okio:okio:1.5.0'
     compile 'com.zhy:okhttputils:2.3.8'
+    compile 'com.umeng.analytics:analytics:latest.integration'
     compile files('libs/zxing.jar')
     compile project(':PushSDK')
 }

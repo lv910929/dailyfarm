@@ -25,6 +25,7 @@ import com.hitotech.dailyfarm.qrcode.utils.InactivityTimer;
 import com.hitotech.dailyfarm.qrcode.utils.QrScanHandler;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.IOException;
 
@@ -208,6 +209,7 @@ public class QrScanActivity extends Activity implements SurfaceHolder.Callback{
     protected void onResume() {
 
         super.onResume();
+        MobclickAgent.onResume(this);
         cameraManager = new CameraManager(getApplication());
         handler = null;
         if (isHasSurface) {
@@ -234,6 +236,7 @@ public class QrScanActivity extends Activity implements SurfaceHolder.Callback{
             mScanMaskObjectAnimator.cancel();
         }
         super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     @Override

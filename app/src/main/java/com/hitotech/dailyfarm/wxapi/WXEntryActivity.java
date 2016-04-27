@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.bigkoo.svprogresshud.SVProgressHUD;
 import com.google.gson.Gson;
@@ -58,17 +57,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
     }
 
-    /*if (baseResp.getType() == ConstantsAPI.COMMAND_SENDAUTH) {
-        switch (baseResp.errCode) {
-            case BaseResp.ErrCode.ERR_OK:
-                Toast.makeText(WXEntryActivity.this, "分享成功！", Toast.LENGTH_SHORT);
-                break;
-            case BaseResp.ErrCode.ERR_AUTH_DENIED:
-                Toast.makeText(WXEntryActivity.this, "分享被拒绝！", Toast.LENGTH_SHORT);
-                break;
-        }
-    }*/
-
     @Override
     public void onResp(BaseResp baseResp) {
         switch (baseResp.errCode) {
@@ -119,7 +107,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         Token token = null;
         if (!JsonData.contains("errcode")) {
             token = new Gson().fromJson(JsonData, Token.class);
-            ContextApplication.token = token;
         } else {//说明授权失败
             DialogUtil.showErrorDialog(WXEntryActivity.this, "授权登录失败！");
             finish();
@@ -143,6 +130,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                             Log.e("error:", e.getMessage());
                             DialogUtil.hideHubWaitDialog();
                             DialogUtil.showErrorDialog(WXEntryActivity.this, "授权登录失败！");
+                            finish();
                         }
 
                         @Override
@@ -159,7 +147,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         Union union = null;
         if (!JsonData.contains("errcode")) {
             union = new Gson().fromJson(JsonData, Union.class);
-            Toast.makeText(WXEntryActivity.this, union.getUnionid(), Toast.LENGTH_SHORT).show();
             sendMsg(union);
         } else {//说明授权失败
             DialogUtil.showErrorDialog(WXEntryActivity.this, "授权登录失败！");

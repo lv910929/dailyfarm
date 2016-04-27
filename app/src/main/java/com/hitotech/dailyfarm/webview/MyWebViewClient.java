@@ -75,7 +75,7 @@ public class MyWebViewClient extends WebViewClient{
 			String description, String failingUrl) {
 		// TODO Auto-generated method stub
 		super.onReceivedError(view, errorCode, description, failingUrl);
-		view.loadUrl("file:///android_asset/day1.html");
+		//view.loadUrl("file:///android_asset/day1.html");
 	}
 
 	@Override

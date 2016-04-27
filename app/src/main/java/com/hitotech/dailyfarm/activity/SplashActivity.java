@@ -9,9 +9,9 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.hitotech.dailyfarm.R;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.IUmengRegisterCallback;
 import com.umeng.message.MsgConstant;
 import com.umeng.message.PushAgent;
@@ -31,12 +31,11 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         handler = new Handler();
         mPushAgent = PushAgent.getInstance(this);
-        mPushAgent.setDebugMode(true);
         // sdk关闭通知声音
         mPushAgent.setNotificationPlaySound(MsgConstant.NOTIFICATION_PLAY_SDK_DISABLE);
         mPushAgent.onAppStart();
         //开启推送并设置注册的回调处理
-        mPushAgent.enable(mRegisterCallback);
+        mPushAgent.enable();
         startImage = (ImageView) findViewById(R.id.iv_start);
         initImage();
     }
@@ -83,10 +82,18 @@ public class SplashActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     String deviceToken = mPushAgent.getRegistrationId();
-                    Toast.makeText(SplashActivity.this,deviceToken,Toast.LENGTH_SHORT).show();
                     Log.e("deviceToken-------",deviceToken);
                 }
             });
         }
     };
+
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
 }
