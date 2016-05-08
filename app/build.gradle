@@ -19,7 +19,6 @@ android {
         debug {
             // No debug config
         }
-
         release {
             storeFile file("../dialyfarm_key.jks")
             storePassword "dialyfarm"

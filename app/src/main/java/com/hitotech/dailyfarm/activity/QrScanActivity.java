@@ -1,12 +1,13 @@
 package com.hitotech.dailyfarm.activity;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -15,6 +16,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.zxing.Result;
 import com.hitotech.dailyfarm.R;
@@ -32,7 +34,7 @@ import java.io.IOException;
 /**
  * Created by Lv on 2016/4/10.
  */
-public class QrScanActivity extends Activity implements SurfaceHolder.Callback{
+public class QrScanActivity extends AppCompatActivity implements SurfaceHolder.Callback{
 
     private static final String TAG = QrScanActivity.class.getSimpleName();
 
@@ -41,6 +43,8 @@ public class QrScanActivity extends Activity implements SurfaceHolder.Callback{
     private InactivityTimer inactivityTimer;
     private BeepManager beepManager;
 
+    private Toolbar toolbarComm;
+    private TextView textTitle;
     private RelativeLayout captureContainer;
     private SurfaceView capturePreview;
     private ImageView captureErrorMask;
@@ -83,11 +87,29 @@ public class QrScanActivity extends Activity implements SurfaceHolder.Callback{
     }
 
     private void initUI(){
+        toolbarComm = (Toolbar) findViewById(R.id.toolbar_comm);
+        textTitle = (TextView) findViewById(R.id.text_title);
         captureContainer = (RelativeLayout) findViewById(R.id.capture_container);
         capturePreview = (SurfaceView) findViewById(R.id.capture_preview);
         captureErrorMask = (ImageView) findViewById(R.id.capture_error_mask);
         captureCropView = (FrameLayout) findViewById(R.id.capture_crop_view);
         captureScanMask = (ImageView) findViewById(R.id.capture_scan_mask);
+
+        initToolBar("二维码扫描");
+    }
+
+    //设置通用的toolbar
+    private void initToolBar(String title){
+        setTitle("");
+        setSupportActionBar(toolbarComm);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbarComm.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        textTitle.setText(title);
     }
     /**
      * 初始化截取的矩形区域

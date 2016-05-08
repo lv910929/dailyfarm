@@ -36,7 +36,9 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:scheme="wx2d73bd398bc2e938" />
                 <!-- 需修改 -->
             </intent-filter>
@@ -52,10 +54,7 @@
             android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".wxapi.WXEntryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -63,6 +62,10 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <service
+            android:name=".service.NetworkStateService"
+            android:enabled="true" />
 
         <meta-data
             android:name="UMENG_APPKEY"
@@ -73,6 +76,7 @@
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="${UMENG_CHANNEL_VALUE}" />
+
     </application>
 
 </manifest>

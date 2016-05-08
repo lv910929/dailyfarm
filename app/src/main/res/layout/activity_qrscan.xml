@@ -6,6 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include layout="@layout/comm_toolbar"/>
+
     <SurfaceView
         android:id="@+id/capture_preview"
         android:layout_width="match_parent"

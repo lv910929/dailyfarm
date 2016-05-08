@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.hitotech.dailyfarm.R;
 import com.hitotech.dailyfarm.data.Constant;
 import com.hitotech.dailyfarm.entity.Union;
+import com.hitotech.dailyfarm.service.NetworkStateService;
 import com.hitotech.dailyfarm.utils.FileUtils;
 import com.hitotech.dailyfarm.utils.IHandler;
 import com.hitotech.dailyfarm.webview.JavaScriptObject;
@@ -54,10 +55,16 @@ public class MainActivity extends AppCompatActivity implements IHandler, MyWebCh
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         javaScriptObject = new JavaScriptObject(this);
+        startService();
         webView = (WebView) findViewById(R.id.webView);
         setWebView();
         webView.loadUrl(Constant.URL_STRING);
         initHandler();
+    }
+
+    private void startService(){
+        Intent intent=new Intent(MainActivity.this,NetworkStateService.class);
+        startService(intent);
     }
 
     private void setWebView() {
