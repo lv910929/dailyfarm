@@ -18,6 +18,7 @@ import com.hitotech.dailyfarm.utils.DialogUtil;
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
+import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -59,18 +60,22 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
     @Override
     public void onResp(BaseResp baseResp) {
+        SendMessageToWX res;
+        if (baseResp instanceof SendMessageToWX.Resp) {
+            finish();
+            return;
+        }
         switch (baseResp.errCode) {
             case BaseResp.ErrCode.ERR_OK://用户同意
                 code = ((SendAuth.Resp) baseResp).code; //即为所需的code
                 getOpenId();
                 break;
             case BaseResp.ErrCode.ERR_AUTH_DENIED://用户拒绝授权
-                finish();
                 break;
             case BaseResp.ErrCode.ERR_USER_CANCEL://用户取消
-                finish();
                 break;
         }
+        finish();
     }
 
     private void getOpenId() {
@@ -100,6 +105,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                             getUnionId(token);
                         }
                     });
+        } else {
+            finish();
         }
     }
 
